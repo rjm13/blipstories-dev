@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "152151529855",
+    "project_id": "blip-5f07e",
+    "storage_bucket": "blip-5f07e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152151529855:android:c48a490dc598afbbbbe24a",
+        "android_client_info": {
+          "package_name": "com.martianmedia.blip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152151529855-nqhkd836pn8tuls51e98lnoh1lqhjv90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB56mfY2zY-Gebl-x2AbNGXDuvPWHyGiXg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152151529855-nqhkd836pn8tuls51e98lnoh1lqhjv90.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
