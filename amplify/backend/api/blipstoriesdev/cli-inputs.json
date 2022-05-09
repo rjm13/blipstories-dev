@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "apiName": "blipstoriesdev",
+    "serviceName": "AppSync",
+    "gqlSchemaPath": "/Users/rjm/blipstories-dev/amplify/backend/api/blipstoriesdev/schema.graphql",
+    "defaultAuthType": {
+      "mode": "AMAZON_COGNITO_USER_POOLS",
+      "cognitoUserPoolId": "authblipstoriesdev4d00229f"
+    }
+  }
+}

@@ -1,0 +1,268 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+#input AMPLIFY { globalAuthRule: AuthRule = { allow: public} } # FOR TESTING ONLY!
+
+type User @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}]) {
+  type: String 
+    @index(name: "usersByNarratorActiveAt", queryField: "usersByNarratorActiveAt", sortKeyFields: ["narratorActiveAt"])
+    @index(name: "usersByArtistActiveAt", queryField: "usersByArtistActiveAt", sortKeyFields: ["artistActiveAt"])
+  id: ID! 
+  name: String
+  email: String
+  imageUri: String
+  bio: String
+  authored: [Story] @hasMany(indexName: "byUser", fields: "id")
+  narrated: [Story] @hasMany(indexName: "byNarratorUser", fields: "id")
+  sharedAssets: [AudioAsset] @hasMany(indexName: "byUser", fields: "id")
+  sharedImageAssets: [ImageAsset] @hasMany(indexName: "byUser", fields: "id")
+  sharedWithAssets: [AudioAsset] @hasMany(indexName: "bySharedUser", fields: "id")
+  sharedWithImageAssets: [ImageAsset] @hasMany(indexName: "bySharedUser", fields: "id")
+  art: [Story] @hasMany(indexName: "byArtist", fields: "id")
+  numAuthored: Int
+  pseudonym: String
+  narratorPseudo: String
+  artistPseudo: String
+  birthdate: String
+  isPublisher: Boolean
+  isNarrator: Boolean
+  isArtist: Boolean
+  topthree: [String]
+  following: [FollowingConn] @hasMany(indexName: "byFollower", fields: "id")
+  followers: [FollowingConn] @hasMany(indexName: "byAuthor", fields: "id")
+  Pinned: [PinnedStory] @hasMany(indexName: "byUser", fields: "id")
+  Rated: [Rating] @hasMany (indexName: "byUser", fields: "id")
+  Finished: [FinishedStory] @hasMany (indexName: "byUser", fields: "id")
+  sampleUri: String
+  narratorText: String
+  accents: [String]
+  voice: String
+  artistText: String
+  artStyles: [String]
+  narratorActiveAt: String
+  artistActiveAt: String
+  plan: String
+  messageSent: [Message] @hasMany(indexName: "byUser", fields: "id")
+  messageRec: [Message] @hasMany(indexName: "byOtherUser", fields: "id")
+}
+
+type FollowingConn @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+{
+    id: ID!
+    type: String @index(name: "followingByDate", queryField: "followingByDate", sortKeyFields: ["createdAt"])
+    followerID: ID @index(name: "byFollower", sortKeyFields: ["authorID"])
+    authorID: ID @index(name: "byAuthor", sortKeyFields: ["followerID"])
+    author: User @hasOne (fields: ["authorID"])
+    follower: User @hasOne (fields: ["followerID"])
+    createdAt: String
+}
+
+type PinnedStory @model @auth( rules: [{ allow: private, operations: [create, delete, update, read]}])
+{
+  id: ID!
+  type: String @index(name: "pinnedStoryByDate", queryField: "PinnedStoryByDate", sortKeyFields: ["createdAt"])
+  userID: ID @index(name: "byUser", sortKeyFields: ["storyID"])
+  user: User @hasOne (fields: ["userID"])
+  storyID: ID
+  story: Story @hasOne (fields: ["storyID"])
+  createdAt: String
+}
+
+type FinishedStory @model @auth( rules: [{ allow: private, operations: [create, delete, update, read]}])
+{
+  id: ID!
+  type: String @index(name: "finishedStoriesByDate", queryField: "finishedStoriesByDate", sortKeyFields: [ "createdAt" ])
+  userID: ID @index(name: "byUser", sortKeyFields: ["storyID"])
+  user: User @hasOne (fields: ["userID"])
+  storyID: ID
+  story: Story @hasOne (fields: ["storyID"])
+  createdAt: String
+  nsfw: Boolean
+  genreID: ID @index(name: "byGenre", sortKeyFields: ["id"])
+  genre: Genre @hasOne (fields: ["genreID"])
+}
+
+type Story @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+{
+  id: ID!
+  type: String 
+    @index(name: "storiesByDate", queryField: "storiesByDate", sortKeyFields: ["createdAt"]  )
+    @index(name: "storiesByUpdated", queryField: "storiesByUpdated", sortKeyFields: ["updatedAt"]  )
+  title: String!
+  imageUri: String
+  audioUri: String!
+  #genre: String
+  user: User @hasOne (fields: ["userID"])
+  userID: ID @index(name: "byUser", sortKeyFields: ["id"])
+  #author: User @hasOne(fields: ["id"])
+  author: String
+  authorID: ID @index(name: "byAuthor", sortKeyFields: ["id"])
+  narrator: String
+  narratorUser: User @hasOne (fields: ["narratorID"])
+  narratorID: ID @index(name: "byNarratorUser", sortKeyFields: ["id"])
+  artistName: String
+  artist: User @hasOne (fields: ["artistID"])
+  artistID: ID @index(name: "byArtist", sortKeyFields: ["id"])
+  time: Int
+  summary: String
+  description: String
+  nsfw: Boolean
+  comments: [Comment] @hasMany (indexName: "byStory", fields: ["id"])
+  tags: [Tag] @manyToMany (relationName: "StoryTag")
+  ratingAvg: Float
+  ratingAmt: Int
+  rated: [Rating] @hasMany(indexName: "byStory", fields: ["id"])
+  genreID: ID @index(name: "byGenre", sortKeyFields: ["id"])
+  genre: Genre @hasOne (fields: ["genreID"])
+  hidden: Boolean
+  approved: String
+  createdAt: String
+  updatedAt: String
+  numListens: Int
+  flag: [Flag] @hasMany (indexName: "byFlag", fields: ["id"])
+  }
+
+type Genre @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    genre: String!
+    icon: String
+    PrimaryColor: String
+    SecondaryColor: String
+    imageUri: String
+    tags: [Tag] @manyToMany (relationName: "GenreTag")
+}
+
+type ImageAsset @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String @index(name: "imageAssetsByDate", queryField: "imageAssetsByDate", sortKeyFields: ["createdAt"]  )
+    title: String
+    imageUri: String
+    isSample: Boolean
+    user: User @hasOne (fields: ["userID"])
+    userID: ID @index(name: "byUser", sortKeyFields: ["id"])
+    sharedUser: User @hasOne (fields: ["sharedUserID"])
+    sharedUserID: ID @index(name: "bySharedUser", sortKeyFields: ["id"])
+    createdAt: String
+}
+
+type DocumentAsset @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String @index(name: "documentsByDate", queryField: "documentsByDate", sortKeyFields: ["createdAt"]  )
+    title: String
+    docUri: String
+    user: User @hasOne (fields: ["userID"])
+    userID: ID @index(name: "byUser", sortKeyFields: ["id"])
+    sharedUserID: ID @index(name: "bySharedUser", sortKeyFields: ["id"])
+    sharedUser: User @hasOne (fields: ["sharedUserID"])
+    createdAt: String
+}
+
+type AudioAsset @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String @index(name: "audioAssetsByDate", queryField: "audioAssetsByDate", sortKeyFields: ["createdAt"]  )
+    title: String
+    audioUri: String
+    time: String
+    isSample: Boolean
+    user: User @hasOne (fields: ["userID"])
+    userID: ID @index(name: "byUser", sortKeyFields: ["id"])
+    sharedUserID: ID @index(name: "bySharedUser", sortKeyFields: ["id"])
+    sharedUser: User @hasOne (fields: ["sharedUserID"])
+    createdAt: String
+}
+
+type Flag @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String @index(name: "flagsByDate", queryField: "flagsByDate", sortKeyFields: ["createdAt"]  )
+    storyID: ID! @index(name: "byFlag", sortKeyFields: ["userID"])
+    story: Story @hasOne (fields: ["storyID"])
+    flagTypes: [String]
+    user: User @hasOne (fields: ["userID"])
+    userID: ID 
+    Status: String
+    createdAt: String
+}
+
+type Comment @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String @index(name: "commentsByDate", queryField: "commentsByDate", sortKeyFields: ["createdAt"]  )
+    storyID: ID! @index(name: "byStory", sortKeyFields: ["userID"])
+    story: Story @hasOne (fields: ["storyID"])
+    content: String!
+    user: User @hasOne (fields: ["userID"])
+    userID: ID 
+    createdAt: String
+    approved: Boolean
+}
+
+type Tag @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String 
+      @index(name: "tagsByCreated", queryField: "tagsByCreated", sortKeyFields: ["createdAt"])
+      @index(name: "tagsByUpdated", queryField: "tagsByUpdated", sortKeyFields: ["updatedAt"])
+    tagName: String!
+    nsfw: Boolean
+    genre: [Genre] @manyToMany (relationName: "GenreTag")
+    stories: [Story] @manyToMany(relationName: "StoryTag")
+    count: Int
+    updatedAt: String
+    createdAt: String
+  }
+
+  type Rating @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String @index(name: "ratingsByDate", queryField: "ratingsByDate", sortKeyFields: ["createdAt"]  )
+    storyID: ID! @index(name: "byStory", sortKeyFields: ["userID"])
+    story: Story @hasOne (fields: ["storyID"])
+    userID: ID! @index(name: "byUser", sortKeyFields: ["storyID"])
+    user: User @hasOne (fields: ["userID"])
+    rating: Int
+    nsfw: Boolean
+    genreID: ID @index(name: "byGenre", sortKeyFields: ["id"])
+    genre: Genre @hasOne (fields: ["genreID"])
+    createdAt: String
+}
+
+type Message @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String 
+      @index(name: "messagesByDate", queryField: "messagesByDate", sortKeyFields: ["createdAt"]  )
+      @index(name: "messagesByUpdatedDate", queryField: "messagesByUpdatedDate", sortKeyFields: ["updatedAt"]  )
+    title: String
+    subtitle: String
+    content: String
+    user: User @hasOne (fields: ["userID"])
+    userID: ID @index(name: "byUser", sortKeyFields: ["id"])
+    otherUserID: ID @index(name: "byOtherUser", sortKeyFields: ["id"])
+    otherUser: User @hasOne (fields: ["otherUserID"])
+    createdAt: String
+    isReadbyUser: Boolean
+    isReadByOtherUser: Boolean
+    replies: [Reply] @hasMany(indexName: "byMessage", fields: ["id"])
+    request: String
+    docID: ID
+    doc: DocumentAsset @hasOne (fields: ["docID"])
+    updatedAt: String
+    status: String
+}
+
+type Reply @model @auth(rules: [{ allow: private, operations: [create, delete, update, read]}])
+  {
+    id: ID!
+    type: String @index(name: "repliesByDate", queryField: "repliesByDate", sortKeyFields: ["createdAt"]  )
+    content: String
+    createdAt: String
+    isRead: Boolean
+    messageID: ID! @index(name: "byMessage", sortKeyFields: ["id"])
+    message: Message @hasOne (fields: ["messageID"])
+    user: User @hasOne (fields: ["userID"])
+    userID: ID @index(name: "byUser", sortKeyFields: ["id"])
+}

@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-blipstoriesdev-dev-110217-authRole",
+      "UnauthRoleArn": "arn:aws:iam::904548764347:role/amplify-blipstoriesdev-dev-110217-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::904548764347:role/amplify-blipstoriesdev-dev-110217-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-blipstoriesdev-dev-110217-deployment",
+      "UnauthRoleName": "amplify-blipstoriesdev-dev-110217-unauthRole",
+      "StackName": "amplify-blipstoriesdev-dev-110217",
+      "StackId": "arn:aws:cloudformation:us-east-2:904548764347:stack/amplify-blipstoriesdev-dev-110217/672f8010-cfb1-11ec-a074-0a8bea45ae2e",
+      "AmplifyAppId": "d3qsf0g4u929st"
+    },
+    "categories": {
+      "auth": {
+        "blipstoriesdev4d00229f": {}
+      }
+    }
+  }
+}

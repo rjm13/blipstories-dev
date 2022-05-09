@@ -1,0 +1,13 @@
+{
+  "resourceName": "s3f2ca5dc5",
+  "policyUUID": "f2ca5dc5",
+  "bucketName": "blipstoriesdevf000098487bc4a4ead12c3c477e344f4",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

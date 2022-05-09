@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "blipstoriesdev",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authblipstoriesdev4d00229f",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
